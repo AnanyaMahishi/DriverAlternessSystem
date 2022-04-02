@@ -1,0 +1,44 @@
+#importing opencvlibrary for basic image processing function
+import cv2
+#numpy for array related functions
+import numpy as np
+#dlib for deep learning modules and face landmark detection
+import dlib 
+#face_utils foe basic operations of conversion
+from imutils import face_utils
+import time
+from playsound import playsound
+from face_detector import get_face_detector,find_faces
+from face_landmarks import get_landmark_model, detect_marks
+#initialising the cam and taking the instance
+cap = cv2.VideoCapture(0)
+
+#initialising the face and landmark detector
+detector = dlib.get_frontal_face_detector()
+predictor =dlib.shape_predctor("shape_predictor_68_face_landmarks.dat")
+
+#status marking for the current state
+sleep = 0
+drowsy = 0
+active = 0
+status = ""
+color = (0,0,0)
+
+def compute(ptA,ptB):
+  dist = np.linalg.norm(ptA-ptB)
+  return dist
+
+
+def blinked(a,b,c,d,e,f):
+  up = compute(b,d)+ compute(c,e)
+  down=compute(a,f)
+  ratio=up/(2.0*down)
+
+  #is driver blinking?
+  # NOTE: change the values according to our system later, trial and error
+  if ratio>0.25:  #opened eye
+    return 2
+  elif (ratio > 0.21 and ratio<=0.25): #droopy eye
+    return 1
+  else:  #closed eye
+    return 0
